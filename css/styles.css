@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.results {
+  font-size: 17px;
+  border: 3px solid #14b2a1;
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  text-align: center;
+}
+
+.results span {
+  font-size: 18px;
+}
+
+.btn {
+  display: block;
+  margin: 4px auto;
+  padding: 5px;
+  width: 50%;
+  border: 1px solid #14b2a1;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #14b2a1;
+  color: white;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 50%;
+  border: 3px solid #14b2a1;
+}
+
+.container.winner {
+  background: url("../img/winner.gif") center / cover no-repeat;
+}
+
+.thumbnail {
+  cursor: pointer;
+  width: 24%;
+  margin: 3px;
+}
