@@ -135,3 +135,22 @@ class Game {
     this.create();
   }
 }
+
+const containerElement = document.querySelector(".container");
+const correctAttempsElement = document.querySelector("#correctAttemps");
+const failedAttempsElement = document.querySelector("#failedAttemps");
+const buttonElement = document.querySelector("button");
+
+const game = new Game(
+  new Pokemon(),
+  new CheckGame(),
+  containerElement,
+  correctAttempsElement,
+  failedAttempsElement
+);
+
+game.create();
+
+buttonElement.addEventListener("click", () => {
+  game.reset();
+});
