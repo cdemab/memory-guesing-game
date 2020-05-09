@@ -70,3 +70,68 @@ class CheckGame {
     };
   }
 }
+
+class Game {
+  constructor(
+    pokemon,
+    checkGame,
+    containerDom,
+    correctAttempsDom,
+    failedAttempsDom
+  ) {
+    this._pokemon = pokemon;
+    this._checkGame = checkGame;
+    this._containerDom = containerDom;
+    this._correctAttempsDom = correctAttempsDom;
+    this._failedAttempsDom = failedAttempsDom;
+  }
+
+  create() {
+    let pokemonCardsChosen = [];
+    this._pokemon.get().forEach((item) => {
+      let card = document.createElement("img");
+      card.setAttribute("src", "img/card.png");
+      card.setAttribute("data-id", item.id);
+      card.setAttribute("class", "thumbnail");
+      card.addEventListener("click", () => {
+        let pokemonCardId = card.getAttribute("data-id");
+        let pokemonCardSelected = this._pokemon.getById(pokemonCardId);
+        pokemonCardsChosen.push(pokemonCardSelected);
+        card.setAttribute("src", pokemonCardSelected.image);
+
+        if (pokemonCardsChosen.length === 2) {
+          setTimeout(() => {
+            let results = this._checkGame.verify(
+              pokemonCardsChosen[0],
+              pokemonCardsChosen[1]
+            );
+            this.displayResult(results);
+            pokemonCardsChosen = [];
+          }, 500);
+        }
+      });
+      this._containerDom.appendChild(card);
+    });
+  }
+
+  displayResult(results) {
+    this._correctAttempsDom.textContent = results.correctAttemps;
+    this._failedAttempsDom.textContent = results.failedAttemps;
+
+    if (results.correctAttemps === this._pokemon.getTotal()) {
+      this._containerDom.classList.add("winner");
+    }
+  }
+
+  reset() {
+    document
+      .querySelectorAll("img")
+      .forEach((e) => this._containerDom.removeChild(e));
+    this._correctAttempsDom.textContent = "0";
+    this._failedAttempsDom.textContent = "0";
+    this._containerDom.classList.remove("winner");
+    this._checkGame.correctAttemps = 0;
+    this._checkGame.failedAttemps = 0;
+    this.create();
+  }
+}
