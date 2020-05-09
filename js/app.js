@@ -34,3 +34,39 @@ class Pokemon {
     return this.pokemons.length / 2;
   }
 }
+
+class CheckGame {
+  constructor() {
+    this.correctAttemps = 0;
+    this.failedAttemps = 0;
+  }
+  verify(pokemonCardOne, pokemonCardTwo) {
+    let cardsDom = document.querySelectorAll("img");
+    let cardsArray = Array.from(cardsDom);
+
+    let pokemonDomElementOne = cardsArray.find(
+      (c) => parseInt(c.dataset.id) === parseInt(pokemonCardOne.id)
+    );
+    let pokemonDomElementTwo = cardsArray.find(
+      (c) => parseInt(c.dataset.id) === parseInt(pokemonCardTwo.id)
+    );
+
+    if (
+      pokemonCardOne.name === pokemonCardTwo.name &&
+      pokemonCardOne.id !== pokemonCardTwo.id
+    ) {
+      pokemonDomElementOne.style.visibility = "hidden";
+      pokemonDomElementTwo.style.visibility = "hidden";
+      this.correctAttemps++;
+    } else {
+      pokemonDomElementOne.setAttribute("src", "img/card.png");
+      pokemonDomElementTwo.setAttribute("src", "img/card.png");
+      this.failedAttemps++;
+    }
+
+    return {
+      correctAttemps: this.correctAttemps,
+      failedAttemps: this.failedAttemps,
+    };
+  }
+}
