@@ -36,9 +36,11 @@ class Pokemon {
 }
 
 class CheckGame {
-  constructor() {
-    this.correctAttemps = 0;
-    this.failedAttemps = 0;
+  constructor(correctAttempsDom, failedAttempsDom) {
+    this._correctAttempsDom = correctAttempsDom;
+    this._failedAttempsDom = failedAttempsDom;
+    this._correctAttemps = 0;
+    this._failedAttemps = 0;
   }
   verify(pokemonCardOne, pokemonCardTwo) {
     let cardsDom = document.querySelectorAll("img");
@@ -57,33 +59,22 @@ class CheckGame {
     ) {
       pokemonDomElementOne.style.visibility = "hidden";
       pokemonDomElementTwo.style.visibility = "hidden";
-      this.correctAttemps++;
+      this._correctAttemps++;
+      this._correctAttempsDom.textContent = this._correctAttemps;
     } else {
       pokemonDomElementOne.setAttribute("src", "img/card.png");
       pokemonDomElementTwo.setAttribute("src", "img/card.png");
-      this.failedAttemps++;
+      this._failedAttemps++;
+      this._failedAttempsDom.textContent = this._failedAttemps;
     }
-
-    return {
-      correctAttemps: this.correctAttemps,
-      failedAttemps: this.failedAttemps,
-    };
   }
 }
 
 class Game {
-  constructor(
-    pokemon,
-    checkGame,
-    containerDom,
-    correctAttempsDom,
-    failedAttempsDom
-  ) {
+  constructor(pokemon, checkGame, containerDom) {
     this._pokemon = pokemon;
     this._checkGame = checkGame;
     this._containerDom = containerDom;
-    this._correctAttempsDom = correctAttempsDom;
-    this._failedAttempsDom = failedAttempsDom;
   }
 
   create() {
@@ -101,11 +92,15 @@ class Game {
 
         if (pokemonCardsChosen.length === 2) {
           setTimeout(() => {
-            let results = this._checkGame.verify(
+            this._checkGame.verify(
               pokemonCardsChosen[0],
               pokemonCardsChosen[1]
             );
-            this.displayResult(results);
+
+            if (this._checkGame._correctAttemps === this._pokemon.getTotal()) {
+              this._containerDom.classList.add("winner");
+            }
+
             pokemonCardsChosen = [];
           }, 500);
         }
@@ -114,24 +109,15 @@ class Game {
     });
   }
 
-  displayResult(results) {
-    this._correctAttempsDom.textContent = results.correctAttemps;
-    this._failedAttempsDom.textContent = results.failedAttemps;
-
-    if (results.correctAttemps === this._pokemon.getTotal()) {
-      this._containerDom.classList.add("winner");
-    }
-  }
-
   reset() {
     document
       .querySelectorAll("img")
       .forEach((e) => this._containerDom.removeChild(e));
-    this._correctAttempsDom.textContent = "0";
-    this._failedAttempsDom.textContent = "0";
+    this._checkGame._correctAttempsDom.textContent = "0";
+    this._checkGame._failedAttempsDom.textContent = "0";
     this._containerDom.classList.remove("winner");
-    this._checkGame.correctAttemps = 0;
-    this._checkGame.failedAttemps = 0;
+    this._checkGame._correctAttemps = 0;
+    this._checkGame._failedAttemps = 0;
     this.create();
   }
 }
@@ -143,10 +129,8 @@ const buttonElement = document.querySelector("button");
 
 const game = new Game(
   new Pokemon(),
-  new CheckGame(),
-  containerElement,
-  correctAttempsElement,
-  failedAttempsElement
+  new CheckGame(correctAttempsElement, failedAttempsElement),
+  containerElement
 );
 
 game.create();
